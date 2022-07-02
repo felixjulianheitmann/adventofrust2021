@@ -2,7 +2,7 @@
 
 This repo tries to implement all the puzzles from the [Advent of code 2021](https://adventofcode.com/).
 
-Each branch solves one puzzle and has a second branch for the second half of each puzzle. All branches are named `puzzle_<1/2>` where the number tells which half of the puzzle is solved by this branch.
+Each branch solves one puzzle and has a second branch for the second half of each puzzle. All branches are named `puzzle_<no>_<1/2>` where the `<no>` is the puzzle number and `<1|2>` tells which half of the puzzle is solved by this branch.
 
 ## Building
 
