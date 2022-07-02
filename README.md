@@ -1,2 +1,15 @@
-# adventofrust2021
-This is a repository to implement the advent of code puzzles from 2021 in rust
+# Advent Of Rust 2021
+
+This repo tries to implement all the puzzles from the [Advent of code 2021](https://adventofcode.com/).
+
+Each branch solves one puzzle and has a second branch for the second half of each puzzle. All branches are named `puzzle_<1/2>` where the number tells which half of the puzzle is solved by this branch.
+
+## Building
+
+Of course, an installed version of rust is needed. With cargo installed, all puzzles should build using
+```bash
+cargo build     # to build
+cargo run       # to run
+```
+
+The inputs and outputs of each puzzle are stored in `input.txt` and `output.txt`.
