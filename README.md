@@ -13,3 +13,7 @@ cargo run       # to run
 ```
 
 The inputs and outputs of each puzzle are stored in `input.txt` and `output.txt`.
+
+## Puzzle description
+
+Here, the puzzle description is copied over from the advent of code page for each puzzle.
