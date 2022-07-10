@@ -4,13 +4,14 @@ fn main() {
     let lines: Vec<i32> = util::split_lines(util::read_input());
 
     let mut n_inc = 0;
-    let mut prev = lines[0];
+    let mut prev: i32 = lines[..2].iter().sum();
 
-    for depth in &lines[1..] {
-        if prev < *depth {
+    for window in lines[1..].windows(3) {
+        let sum = window.iter().sum();
+        if prev < sum {
             n_inc += 1;
         }
-        prev = *depth;
+        prev = sum;
     }
 
     util::write_output(n_inc);
