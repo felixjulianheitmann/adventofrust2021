@@ -14,7 +14,7 @@ pub fn split_lines_str(text: String) -> Vec<String> {
     text.split('\n').map(|l| String::from(l)).collect()
 }
 
-pub fn split_at<T>(token: char, text: &str) -> Vec<&str> {
+pub fn split_at(token: char, text: &str) -> Vec<&str> {
     text.split(token).collect()
 }
 
