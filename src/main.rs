@@ -1,17 +1,20 @@
-use util::split_lines_str;
-
 pub mod util;
 
 fn main() {
     let mut pos_h = 0;
     let mut pos_v = 0;
+    let mut aim = 0;
 
     for line in &util::split_lines_str(util::read_input()) {
         let cmd = util::split_at(' ', line);
         match cmd[0] {
-            "forward"=> pos_h += cmd[1].parse::<i32>().unwrap(),
-            "up"=> pos_v -= cmd[1].parse::<i32>().unwrap(),
-            "down"=> pos_v += cmd[1].parse::<i32>().unwrap(),
+            "forward"=> {
+                let v = cmd[1].parse::<i32>().unwrap();
+                pos_h += v;
+                pos_v += v * aim;
+            },
+            "up"=> aim -= cmd[1].parse::<i32>().unwrap(),
+            "down"=> aim += cmd[1].parse::<i32>().unwrap(),
             _ => continue,
         }
     }
