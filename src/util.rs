@@ -7,19 +7,19 @@ where
     T: std::str::FromStr,
     <T as std::str::FromStr>::Err: std::fmt::Debug,
 {
-    let lines = text.split('\n');
-    lines.map(|l| l.parse().unwrap()).collect()
+    text.split('\n').map(|l| l.parse().unwrap()).collect()
 }
 
 pub fn split_lines_str(text: String) -> Vec<String> {
     text.split('\n').map(|l| String::from(l)).collect()
 }
 
-pub fn split_at<'a, T>(token: char, text: &'a str) -> Vec<T>
+pub fn split_at<'a, T>(token: &str, text: String) -> Vec<T>
 where
-    Vec<T>: FromIterator<&'a str>,
+    T: std::str::FromStr,
+    <T as std::str::FromStr>::Err: std::fmt::Debug,
 {
-    text.split(token).collect()
+    text.split(token).map(|l| l.parse().unwrap()).collect()
 }
 
 pub fn write_output<T>(out: T)
