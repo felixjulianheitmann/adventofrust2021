@@ -26,6 +26,8 @@ pub fn write_output<T>(out: T)
 where
     T: std::fmt::Display,
 {
-    std::fs::write("output.txt", format!("The result is: {}", out.to_string()))
+    let msg = format!("The result is: {}", out.to_string());
+    println!("{}",msg);
+    std::fs::write("output.txt", msg)
         .expect("Writing to output.txt failed...")
 }
