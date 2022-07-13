@@ -1,3 +1,5 @@
+pub mod util;
+
 fn main() {
-    println!("Hello, world!");
+    let init = util::split_at::<i32>(",", util::read_input());
 }
