@@ -8,17 +8,14 @@ fn has_won(board: &Vec<Vec<i32>>, draws: &Vec<i32>) -> (bool, i32) {
     let mut won = false;
     let mut score = 0;
 
-    for line in board {
-        if line.iter().all(|i| draws.contains(i)) {
-            won = true;
-        }
-    }
-
+    // check lines
     if board.iter().any(|l| l.iter().all(|i| draws.contains(i))) {
         won = true;
     }
 
+    // check columns
     for column in 0..board[0].len() {
+
         if board
             .iter()
             .flatten()
@@ -62,12 +59,13 @@ fn main() {
         .collect();
 
     let mut draws_yet: Vec<i32> = Vec::new();
-    for draw in draws {
+    'game: for draw in draws {
         draws_yet.push(draw);
         for board in &boards {
             let (won, score) = has_won(board, &draws_yet);
             if won {
                 util::write_output(score);
+                break 'game;
             }
         }
     }
