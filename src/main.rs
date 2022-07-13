@@ -14,17 +14,18 @@ fn has_won(board: &Vec<Vec<i32>>, draws: &Vec<i32>) -> (bool, i32) {
     }
 
     // check columns
-    for column in 0..board[0].len() {
-
-        if board
-            .iter()
-            .flatten()
-            .skip(column)
-            .step_by(board[0].len())
-            .all(|x| draws.contains(x))
-        {
-            won = true;
-            break;
+    if !won {
+        for column in 0..board[0].len() {
+            if board
+                .iter()
+                .flatten()
+                .skip(column)
+                .step_by(board[0].len())
+                .all(|x| draws.contains(x))
+            {
+                won = true;
+                break;
+            }
         }
     }
 
@@ -34,9 +35,9 @@ fn has_won(board: &Vec<Vec<i32>>, draws: &Vec<i32>) -> (bool, i32) {
             .flatten()
             .filter(|x| !draws.contains(*x))
             .fold(0, |acc, x| acc + x);
+        score *= draws.last().unwrap();
     }
 
-    score *= draws.last().unwrap();
     (won, score)
 }
 
@@ -59,13 +60,19 @@ fn main() {
         .collect();
 
     let mut draws_yet: Vec<i32> = Vec::new();
+    let mut boards_won: Vec<usize> = Vec::new();
     'game: for draw in draws {
         draws_yet.push(draw);
-        for board in &boards {
-            let (won, score) = has_won(board, &draws_yet);
-            if won {
-                util::write_output(score);
-                break 'game;
+        for (idx, board) in boards.iter().enumerate() {
+            if !boards_won.contains(&idx) {
+                let (won, score) = has_won(board, &draws_yet);
+                if won {
+                    boards_won.push(idx);
+                    if boards_won.len() == boards.len() {
+                        util::write_output(score);
+                        break 'game;
+                    }
+                }
             }
         }
     }
