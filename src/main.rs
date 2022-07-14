@@ -1,5 +1,9 @@
 pub mod util;
 
+fn sum_series(n: i32) -> i32 {
+    (1..=n).fold(0, |acc, x| acc + x)
+}
+
 fn main() {
     let crabs: Vec<i32> = util::split_at(",", util::read_input());
     let max_pos = crabs.iter().max().unwrap();
@@ -9,7 +13,7 @@ fn main() {
     for pos in 0..=*crabs.iter().max().unwrap() {
         costs[pos as usize] = crabs
             .iter()
-            .fold(0, |acc, crab_pos| acc + (pos - crab_pos).abs());
+            .fold(0, |acc, crab_pos| acc + sum_series((pos - crab_pos).abs()));
     }
 
     util::write_output(costs.iter().min().unwrap());
