@@ -1,7 +1,7 @@
 pub mod util;
 
 fn main() {
-    let n_days = 80;
+    let n_days = 256;
 
     let init = util::split_at::<usize>(",", util::read_input());
     let mut population = vec![0, 0, 0, 0, 0, 0, 0, 0, 0];
