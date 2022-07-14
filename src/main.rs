@@ -82,67 +82,53 @@ fn calc_basin_size(
     checked_map: &mut Vec<Vec<bool>>,
     basin_size: &mut i32,
 ) -> i32 {
-    let field_check = |height: i32, checked_yet: &mut bool, basin_size: &mut i32| -> bool {
-        let mut still_basin = false;
-        if height < 9 && !*checked_yet {
-            *basin_size += 1;
-            still_basin = true;
+    let field_check = |heights: &Vec<Vec<i32>>,
+                       checked_map: &mut Vec<Vec<bool>>,
+                       x: usize,
+                       y: usize,
+                       basin_size: &mut i32|
+     -> bool {
+        match heights.get(x) {
+            Some(col) => match col.get(y) {
+                Some(h) => {
+                    let mut still_basin = false;
+                    if *h < 9 && !checked_map[x][y] {
+                        *basin_size += 1;
+                        still_basin = true;
+                    }
+                    checked_map[x][y] = true;
+                    return still_basin;
+                }
+                None => false,
+            },
+            None => false,
         }
-        *checked_yet = true;
-        still_basin
     };
 
     // Check neighbors
-    match heights.get(((*x as i32) - 1) as usize) {
-        Some(col) => {
-            if field_check(
-                *col.get(*y).unwrap(),
-                checked_map.get_mut(x - 1).unwrap().get_mut(*y).unwrap(),
-                basin_size,
-            ) {
-                calc_basin_size(&(x - 1), y, heights, checked_map, basin_size);
-            }
+    if *x > 0 {
+        // Top
+        if field_check(&heights, checked_map, x - 1, *y, basin_size) {
+            calc_basin_size(&(x - 1), y, heights, checked_map, basin_size);
         }
-        None => (),
-    };
+    }
 
-    match heights.get(x + 1) {
-        Some(col) => {
-            if field_check(
-                *col.get(*y).unwrap(),
-                checked_map.get_mut(x + 1).unwrap().get_mut(*y).unwrap(),
-                basin_size,
-            ) {
-                calc_basin_size(&(x + 1), y, heights, checked_map, basin_size);
-            }
-        }
-        None => (),
-    };
+    // Bottom
+    if field_check(&heights, checked_map, x + 1, *y, basin_size) {
+        calc_basin_size(&(x + 1), y, heights, checked_map, basin_size);
+    }
 
-    match heights.get(*x).unwrap().get(((*y as i32) - 1) as usize) {
-        Some(val) => {
-            if field_check(
-                *val,
-                checked_map.get_mut(*x).unwrap().get_mut(y - 1).unwrap(),
-                basin_size,
-            ) {
-                calc_basin_size(x, &(y - 1), heights, checked_map, basin_size);
-            }
+    if *y > 0 {
+        // Left
+        if field_check(&heights, checked_map, *x, y - 1, basin_size) {
+            calc_basin_size(x, &(y - 1), heights, checked_map, basin_size);
         }
-        None => (),
-    };
-    match heights.get(*x).unwrap().get(y + 1) {
-        Some(val) => {
-            if field_check(
-                *val,
-                checked_map.get_mut(*x).unwrap().get_mut(y + 1).unwrap(),
-                basin_size,
-            ) {
-                calc_basin_size(x, &(y + 1), heights, checked_map, basin_size);
-            }
-        }
-        None => (),
-    };
+    }
+
+    // Right
+    if field_check(&heights, checked_map, *x, y + 1, basin_size) {
+        calc_basin_size(x, &(y + 1), heights, checked_map, basin_size);
+    }
 
     *basin_size
 }
