@@ -1,7 +1,7 @@
 pub mod util;
 
 fn main() {
-    const N_STEPS: i32 = 10;
+    const N_STEPS: i32 = 100;
 
     let mut dumbos = util::split_lines_str(util::read_input())
         .iter()
@@ -25,14 +25,20 @@ fn main() {
         .collect::<Vec<_>>();
 
     let safe_inc = |v: &mut Vec<Vec<i32>>, r: usize, r_inc: i32, c: usize, c_inc: i32| {
-        if 
-        if let Some(col) = v.get_mut(r) {
-            if let Some(x) = col.get_mut(c) {
+        if (r == 0 && r_inc < 0) || (r == v.len() && r_inc > 0) {
+            return;
+        }
+        if (c == 0 && c_inc < 0) || (r == v.len() && c_inc > 0) {
+            return;
+        }
+        if let Some(col) = v.get_mut(((r as i32) + r_inc) as usize) {
+            if let Some(x) = col.get_mut(((c as i32) + c_inc) as usize) {
                 *x += 1;
             }
         }
     };
 
+    let mut n_flashes = 0;
     for _ in 0..N_STEPS {
         let mut flashed_map: Vec<Vec<bool>> = Vec::new();
         flashed_map.resize(dumbos.len(), Vec::new());
@@ -57,10 +63,10 @@ fn main() {
                         safe_inc(&mut dumbos, r, -1, c, 0);
                         safe_inc(&mut dumbos, r, -1, c, 1);
                         safe_inc(&mut dumbos, r, 0, c, -1);
-                        safe_inc(&mut dumbos, r, 0, c, -1);
+                        safe_inc(&mut dumbos, r, 0, c, 1);
                         safe_inc(&mut dumbos, r, 1, c, -1);
                         safe_inc(&mut dumbos, r, 1, c, 0);
-                        safe_inc(&mut dumbos, r, 1, c, -1);
+                        safe_inc(&mut dumbos, r, 1, c, 1);
                         flashed_map[r][c] = true;
                     }
                 }
@@ -74,12 +80,9 @@ fn main() {
             .for_each(|(energy, has_flashed)| {
                 if has_flashed {
                     *energy = 0;
+                    n_flashes += 1;
                 }
             });
     }
-
-    for line in dumbos {
-        println!("{:?}", line);
-    }
-    util::write_output(0);
+    util::write_output(n_flashes);
 }
