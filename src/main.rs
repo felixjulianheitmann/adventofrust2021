@@ -2,16 +2,28 @@ pub mod util;
 
 fn main() {
     let lines = util::split_lines_str(util::read_input());
+    let mut score = 0;
+    for line in lines {
+        let (mut score_l, mut it_rest) = check_block(&line.chars());
+        score += score_l;
+        while let Some(_) = it_rest.peekable().peek() {
+            (score_l, it_rest) = check_block(it_rest);
+            score += score_l;
+        }
+    }
+
+    util::write_output(score);
 }
 
-fn check_block<'a>(open_token: char, line: &'a str) -> (i32, &'a str) {
-    
-    let mut token = open_token;
+fn check_block<'a>(it: &'a std::str::Chars<'a>) -> (i32, &'a std::str::Chars<'a>) {
+
+    let ot = it.next().unwrap();
+
     loop {
 
-        let nt = match line.chars().next() {
+        let nt = match it.next() {
             Some(t) => t,
-            None => return (symbol2score(open_token), line),
+            None => return (symbol2score(ot), it),
         };
         match token {
             '(' => match nt {
