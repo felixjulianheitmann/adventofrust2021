@@ -1,8 +1,6 @@
 pub mod util;
 
 fn main() {
-    const N_STEPS: i32 = 100;
-
     let mut dumbos = util::split_lines_str(util::read_input())
         .iter()
         .map(|s| {
@@ -38,8 +36,8 @@ fn main() {
         }
     };
 
-    let mut n_flashes = 0;
-    for _ in 0..N_STEPS {
+    let mut iter = 1;
+    loop {
         let mut flashed_map: Vec<Vec<bool>> = Vec::new();
         flashed_map.resize(dumbos.len(), Vec::new());
         flashed_map
@@ -76,13 +74,17 @@ fn main() {
         dumbos
             .iter_mut()
             .flatten()
-            .zip(flashed_map.into_iter().flatten())
+            .zip(flashed_map.iter().flatten())
             .for_each(|(energy, has_flashed)| {
-                if has_flashed {
+                if *has_flashed {
                     *energy = 0;
-                    n_flashes += 1;
                 }
             });
+
+        if flashed_map.iter().flatten().into_iter().all(|x| *x) {
+            break;
+        }
+        iter += 1;
     }
-    util::write_output(n_flashes);
+    util::write_output(iter);
 }
