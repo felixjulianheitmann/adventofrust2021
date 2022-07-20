@@ -2,7 +2,6 @@ pub mod util;
 
 use std::collections::hash_map::HashMap;
 
-#[derive(Debug)]
 struct Cave {
     name: String,
     is_large: bool,
@@ -42,36 +41,46 @@ fn main() {
     }
 
     let start = &caves["start"];
-    fn path_finder(
-        p: &Cave,
-        caves: &HashMap<String, Cave>,
-        mut visited: HashMap<String, bool>,
-    ) -> i32 {
-        let end = &caves["end"];
-        let mut n_paths = 0;
-        visited.insert(p.name.clone(), true);
+    util::write_output(path_finder(&start, &caves, HashMap::new(), false));
+}
 
-        for n in p
-            .neighbors
-            .iter()
-            .filter(|c| {
-                let x = caves.get(*c).unwrap();
-                let seen_already = match visited.get(*c) {
-                    Some(b) => *b,
-                    None => false,
-                };
-                x.is_large || !seen_already
-            })
-            .map(|s| caves.get(s).unwrap())
-        {
-            if n.name == end.name {
-                n_paths += 1;
-            } else {
-                n_paths += path_finder(n, caves, visited.clone());
-            }
+fn path_finder(
+    p: &Cave,
+    caves: &HashMap<String, Cave>,
+    mut visited: HashMap<String, i32>,
+    mut double_visit: bool,
+) -> i32 {
+    let end = &caves["end"];
+    let mut n_paths = 0;
+    if let Some(times_seen) = visited.get_mut(&p.name) {
+        *times_seen += 1;
+        if !p.is_large {
+            double_visit = true;
         }
-        return n_paths;
+    } else {
+        visited.insert(p.name.clone(), 1);
     }
 
-    util::write_output(path_finder(&start, &caves, HashMap::new()));
+    for n in p
+        .neighbors
+        .iter()
+        .filter(|c| {
+            let x = caves.get(*c).unwrap();
+            let seen_already = match visited.get(*c) {
+                Some(b) => *b,
+                None => 0,
+            };
+            x.is_large
+                || seen_already == 0
+                || (seen_already == 1 && !double_visit && x.name != "start" && x.name != "end")
+        })
+        .map(|s| caves.get(s).unwrap())
+    {
+        if n.name == end.name {
+            n_paths += 1;
+        } else {
+            n_paths += path_finder(n, caves, visited.clone(), double_visit);
+        }
+    }
+    return n_paths;
 }
