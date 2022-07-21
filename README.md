@@ -44,10 +44,10 @@ Apparently, the Elves have never used this feature. To your surprise, you manage
 2,14
 8,10
 9,0
-```
 
 fold along y=7
 fold along x=5
+```
 The first section is a list of dots on the transparent paper. 0,0 represents the top-left coordinate. The first value, x, increases to the right. The second value, y, increases downward. So, the coordinate 3,0 is to the right of 0,0, and the coordinate 0,7 is below 0,0. The coordinates in this example form the following pattern, where # is a dot on the paper and . is an empty, unmarked position:
 
 ```
