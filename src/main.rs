@@ -33,28 +33,39 @@ fn main() {
         let mut new_dots: DotSet = HashSet::new();
 
         for (x, y) in dots {
+            let mut decision_value = x;
+            let mut new_tup = (2 * fold - x, y);
             match axis.as_str() {
-                "x" => {
-                    if x < fold {
-                        new_dots.insert((2 * fold - x, y));
-                    } else {
-                        new_dots.insert((x, y));
-                    }
-                }
                 "y" => {
-                    if y > fold {
-                        new_dots.insert((x, 2 * fold - y));
-                    } else {
-                        new_dots.insert((x, y));
-                    }
+                    decision_value = y;
+                    new_tup = (x, 2 * fold - y);
                 }
-                _ => (),
+                _ => (), // "x" is covered as default above
             };
+            if decision_value > fold {
+                new_dots.insert(new_tup);
+            } else {
+                new_dots.insert((x, y));
+            }
         }
 
         dots = new_dots;
-        break; // Only first iteration is desired
     }
 
-    util::write_output(dots.len());
+    let max_x = dots.iter().map(|(x, _)| x).max().unwrap();
+    let max_y = dots.iter().map(|(_, y)| y).max().unwrap();
+
+    let mut result_str = "\n".to_string();
+    for y in 0..=*max_y {
+        for x in 0..=*max_x {
+            if let Some(_) = dots.get(&(x, y)) {
+                result_str += format!("#").as_str();
+            } else {
+                result_str += format!("-").as_str();
+            }
+        }
+        result_str += "\n";
+    }
+
+    util::write_output(result_str);
 }
