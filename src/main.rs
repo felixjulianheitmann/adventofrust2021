@@ -34,16 +34,18 @@ fn main() {
 
         for (x, y) in dots {
             match axis.as_str() {
-                "y" => {
+                "x" => {
                     if x < fold {
                         new_dots.insert((2 * fold - x, y));
-                        new_dots.remove(&(x, y));
+                    } else {
+                        new_dots.insert((x, y));
                     }
                 }
-                "x" => {
+                "y" => {
                     if y > fold {
                         new_dots.insert((x, 2 * fold - y));
-                        new_dots.remove(&(x, y));
+                    } else {
+                        new_dots.insert((x, y));
                     }
                 }
                 _ => (),
@@ -51,18 +53,7 @@ fn main() {
         }
 
         dots = new_dots;
-        break;
-    }
-
-    for i in 0..10 {
-        for j in 0..10 {
-            if let Some(_) = dots.get(&(i, j)) {
-                print!("#");
-            } else {
-                print!(".");
-            }
-        }
-        println!("");
+        break; // Only first iteration is desired
     }
 
     util::write_output(dots.len());
