@@ -1,11 +1,11 @@
 pub mod util;
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 fn main() {
     let mut vec = util::split_at::<String>("\n\n", util::read_input());
-    let template = vec.remove(0);
-    let last_letter = template.chars().last().unwrap() as u8;
+    let template_str = vec.remove(0);
+    let last_letter = template_str.chars().last().unwrap() as u8;
     let rules = vec.remove(0);
 
     let rules = util::split_lines_str(rules.to_string())
@@ -16,11 +16,15 @@ fn main() {
     const N_STEPS: i32 = 40;
 
     // Transform template into HashMap for better scaling
-    let mut template = template
-        .as_bytes()
-        .windows(2)
-        .map(|pair| ((pair[0], pair[1]), 0))
-        .collect::<HashMap<_, usize>>();
+    let mut template: HashMap<(u8, u8), usize> = HashMap::new();
+    for pair in template_str.as_bytes().windows(2) {
+        let pair = (pair[0], pair[1]);
+        if let Some(p) = template.get_mut(&pair) {
+            *p += 1;
+        } else {
+            template.insert(pair, 1);
+        }
+    }
 
     for _ in 0..N_STEPS {
         let mut new_template: HashMap<(u8, u8), usize> = HashMap::new();
@@ -52,18 +56,23 @@ fn main() {
         template = new_template;
     }
 
-    let mut occurrences = template
-        .iter()
-        .map(|((l, _), n)| (n, l))
-        .collect::<Vec<_>>();
+    let mut occurrences: HashMap<u8, usize> = HashMap::new();
+    for (pair, n) in template {
+        if let Some(x) = occurrences.get_mut(&pair.0) {
+            *x += n;
+        } else {
+            occurrences.insert(pair.0, n);
+        }
+    }
 
-    // Alternative ->
-    //  Collect letters as singles in Hashmap with their occurences.
-    //   - Add if the letters is already present
-    //   - Create new if letter is not in there yet
-    //  Update letter which is 'last_letter' with +=1
-    //  Collect as vector of usize
-    //  Sort vector
+    // Update because last letter has not yet been accounted for
+    *occurrences.get_mut(&last_letter).unwrap() += 1;
 
-    util::write_output(occurrences.last().unwrap().0 - occurrences.iter().next().unwrap().0);
+    let mut occurrences = occurrences
+        .into_iter()
+        .map(|(_, n)| n)
+        .collect::<Vec<usize>>();
+    occurrences.sort();
+
+    util::write_output(occurrences.last().unwrap() - occurrences.iter().next().unwrap());
 }
